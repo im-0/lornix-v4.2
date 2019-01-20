@@ -10,8 +10,8 @@ MUSL_CROSS_GIT_COMMIT ?= 040804dfa622738d723cab4163f19ba484a0aa67
 BUSYBOX_URL ?= https://busybox.net/downloads/busybox-1.30.0.tar.bz2
 BUSYBOX_SHA512 ?= c494278f6655cb855e8bd3a316d77b879cf6ee70fa5b0408705391b1108f298d45ab4c2921d939c17122f50c4a9d7b5c77e57bacf5e6c7ac4dc4f78c1bd70a79
 
-KERNEL_GIT_URL ?= https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-KERNEL_GIT_COMMIT ?= e9a713f77bb26886d7207a8bb6dd2c9c7b8e287c
+KERNEL_URL ?= https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.20.3.tar.xz
+KERNEL_SHA512 ?= 73461cc34491e2bd9ea7638225e6d06ade8f092efa66fbe7f38c3d7143d4f78b852175bcc1149970958fbcdeacb0ae7507a8544d0bbb55d3d3826787b8f3d615
 
 BUILD_DIR ?= $(ROOT_DIR)/build-dir
 
@@ -97,10 +97,14 @@ $(BUILD_DIR)/.kernel-build-done: $(BUILD_DIR)/.musl-cross-build-done $(BUILD_DIR
 	[ -e "$(KERNEL_DIR)" ] && \
 		rm -fr "$(KERNEL_DIR)" || \
 		true
+	[ -e $(BUILD_DIR)/linux-* ] && \
+		rm -fr $(BUILD_DIR)/linux-* || \
+		true
 
-	git clone "$(KERNEL_GIT_URL)" "$(KERNEL_DIR)"
-	cd "$(KERNEL_DIR)"; \
-	git checkout "$(KERNEL_GIT_COMMIT)"
+	wget -t 5 -T 15 -O "$(BUILD_DIR)/k.tar.xz" "$(KERNEL_URL)"
+	echo "$(KERNEL_SHA512) $(BUILD_DIR)/k.tar.xz" | sha512sum -c -
+	tar -C "$(BUILD_DIR)" -xf "$(BUILD_DIR)/k.tar.xz"
+	mv -v $(BUILD_DIR)/linux-* "$(KERNEL_DIR)"
 
 	cp "$(ROOT_DIR)/kernel-conf" "$(KERNEL_DIR)/.config"
 	cp "$(ROOT_DIR)/initramfs-conf" "$(KERNEL_DIR)/"
