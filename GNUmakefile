@@ -2,7 +2,7 @@ ROOT_DIR := $(CURDIR)
 
 V ?= 0
 
-RELEASE_NUM ?= 0
+RELEASE_NUM ?= 1
 
 MUSL_CROSS_GIT_URL ?= https://github.com/richfelker/musl-cross-make
 MUSL_CROSS_GIT_COMMIT ?= 040804dfa622738d723cab4163f19ba484a0aa67
