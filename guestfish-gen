@@ -4,6 +4,19 @@ ROOT_DIR="${1}"
 KERNEL_DIR="${2}"
 IMG_FILE="${3}"
 
+if [ -e "/etc/fedora-release" ]; then
+	# Fedora
+	MBR_DIR="/usr/share/syslinux"
+	LIB_DIR="/usr/share/syslinux"
+elif [ -e "/etc/ubuntu-release" ]; then
+	# Ubuntu
+	MBR_DIR="/usr/lib/EXTLINUX"
+	LIB_DIR="/usr/lib/syslinux/modules/bios"
+else
+	echo "Unknown distro"
+	exit 1
+fi
+
 guestfish <<GUESTFISH_END
 sparse ${IMG_FILE} 16M
 run
@@ -19,10 +32,10 @@ upload ${ROOT_DIR}/extlinux.conf /boot/extlinux.conf
 upload ${KERNEL_DIR}/arch/x86/boot/bzImage /boot/bzImage
 
 extlinux /boot
-upload /usr/share/syslinux/libutil.c32 /boot/libutil.c32
-upload /usr/share/syslinux/menu.c32 /boot/menu.c32
+upload ${LIB_DIR}/libutil.c32 /boot/libutil.c32
+upload ${LIB_DIR}/menu.c32 /boot/menu.c32
 
-upload /usr/share/syslinux/mbr.bin /boot/mbr.bin
+upload ${MBR_DIR}/mbr.bin /boot/mbr.bin
 copy-file-to-device /boot/mbr.bin /dev/sda size:440
 rm /boot/mbr.bin
 GUESTFISH_END

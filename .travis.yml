@@ -1,0 +1,25 @@
+os:
+  - linux
+
+dist: xenial
+
+# To install additional packages.
+sudo: required
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y cowsay libguestfs-tools wget build-essential extlinux syslinux-common
+
+script:
+  - make -j2 all
+
+after_success:
+  - cd build-dir
+    FNAME=$( echo lornix-*.img )
+    echo
+    ls -lh "${FNAME}"
+    echo
+    sha512sum "${FNAME}"
+    echo
+    curl --upload-file "${FNAME}" "https://transfer.sh/${FNAME}"
+    echo
