@@ -65,9 +65,11 @@ $(BUILD_DIR)/.busybox-build-done: $(BUILD_DIR)/.musl-cross-build-done
 	tar -C "$(BUILD_DIR)" -xf "$(BUILD_DIR)/bb.tar.bz2"
 	mv -v $(BUILD_DIR)/busybox-* "$(BUSYBOX_DIR)"
 
+	cp "$(ROOT_DIR)/busybox-conf" "$(BUSYBOX_DIR)/.config"
+
 	export PATH="$(MUSL_CROSS_BIN_DIR):$${PATH}"; \
 	cd "$(BUSYBOX_DIR)"; \
-	$(MAKE) CROSS_COMPILE=i486-linux-musl- CFLAGS="-march=i486 -mtune=i486" defconfig; \
+	yes "" | $(MAKE) CROSS_COMPILE=i486-linux-musl- CFLAGS="-march=i486 -mtune=i486" oldconfig; \
 	$(MAKE) CROSS_COMPILE=i486-linux-musl- CFLAGS="-march=i486 -mtune=i486"
 
 	touch "$(@)"
