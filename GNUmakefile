@@ -25,6 +25,8 @@ INITRAMFS_DIR ?= $(BUILD_DIR)/initramfs
 
 KERNEL_DIR ?= $(BUILD_DIR)/kernel
 
+MUSL_MAKE_OPTS ?=
+
 git_hash = $(shell git rev-parse --short HEAD)
 release_ver = v4.2-r$(RELEASE_NUM)-git-$(git_hash)
 
@@ -48,8 +50,8 @@ $(BUILD_DIR)/.musl-cross-build-done: $(BUILD_DIR)/.mkdir-done
 	git checkout "$(MUSL_CROSS_GIT_COMMIT)"
 
 	cd "$(MUSL_CROSS_DIR)"; \
-	$(MAKE) TARGET=i486-linux-musl; \
-	$(MAKE) TARGET=i486-linux-musl install
+	$(MAKE) $(MUSL_MAKE_OPTS) TARGET=i486-linux-musl; \
+	$(MAKE) $(MUSL_MAKE_OPTS) TARGET=i486-linux-musl install
 
 	touch "$(@)"
 
