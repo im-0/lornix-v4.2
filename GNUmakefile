@@ -25,10 +25,11 @@ INITRAMFS_DIR ?= $(BUILD_DIR)/initramfs
 
 KERNEL_DIR ?= $(BUILD_DIR)/kernel
 
-GIT_HASH = $(shell git rev-parse --short HEAD)
+git_hash = $(shell git rev-parse --short HEAD)
+release_ver = v4.2-r$(RELEASE_NUM)-git-$(git_hash)
 
 .PHONY: all
-all: $(BUILD_DIR)/lornix.img
+all: $(BUILD_DIR)/lornix-$(release_ver).img
 
 $(BUILD_DIR)/.mkdir-done:
 	[ -e "$(BUILD_DIR)" ] && \
@@ -90,7 +91,7 @@ $(BUILD_DIR)/.initramfs-tree-done: $(BUILD_DIR)/.busybox-build-done
 	cp -a "$(ROOT_DIR)/inittab" "$(INITRAMFS_DIR)/etc/"
 	cp -a "$(ROOT_DIR)/profile" "$(INITRAMFS_DIR)/etc/"
 
-	cowsay -f "tux" "LORnix-v4.2-r$(RELEASE_NUM)-git-$(GIT_HASH)" \
+	cowsay -f "tux" "LORnix-$(release_ver)" \
 		>"$(INITRAMFS_DIR)/etc/banner"
 
 	touch "$(@)"
@@ -119,5 +120,5 @@ $(BUILD_DIR)/.kernel-build-done: $(BUILD_DIR)/.musl-cross-build-done $(BUILD_DIR
 
 	touch "$(@)"
 
-$(BUILD_DIR)/lornix.img: $(BUILD_DIR)/.kernel-build-done
+$(BUILD_DIR)/lornix-$(release_ver).img: $(BUILD_DIR)/.kernel-build-done
 	$(ROOT_DIR)/guestfish-gen "$(ROOT_DIR)" "$(KERNEL_DIR)" "$(@)" || rm -f "$(@)"
