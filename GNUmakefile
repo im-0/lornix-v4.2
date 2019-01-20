@@ -7,8 +7,8 @@ RELEASE_NUM ?= 0
 MUSL_CROSS_GIT_URL ?= https://github.com/richfelker/musl-cross-make
 MUSL_CROSS_GIT_COMMIT ?= 040804dfa622738d723cab4163f19ba484a0aa67
 
-BUSYBOX_GIT_URL ?= https://github.com/mirror/busybox
-BUSYBOX_GIT_COMMIT ?= ef800e5441185585986f9b7aaf39010a926fbd5f
+BUSYBOX_URL ?= https://busybox.net/downloads/busybox-1.30.0.tar.bz2
+BUSYBOX_SHA512 ?= c494278f6655cb855e8bd3a316d77b879cf6ee70fa5b0408705391b1108f298d45ab4c2921d939c17122f50c4a9d7b5c77e57bacf5e6c7ac4dc4f78c1bd70a79
 
 KERNEL_GIT_URL ?= https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
 KERNEL_GIT_COMMIT ?= e9a713f77bb26886d7207a8bb6dd2c9c7b8e287c
@@ -56,10 +56,14 @@ $(BUILD_DIR)/.busybox-build-done: $(BUILD_DIR)/.musl-cross-build-done
 	[ -e "$(BUSYBOX_DIR)" ] && \
 		rm -fr "$(BUSYBOX_DIR)" || \
 		true
+	[ -e $(BUILD_DIR)/busybox-* ] && \
+		rm -fr $(BUILD_DIR)/busybox-* || \
+		true
 
-	git clone "$(BUSYBOX_GIT_URL)" "$(BUSYBOX_DIR)"
-	cd "$(BUSYBOX_DIR)"; \
-	git checkout "$(BUSYBOX_GIT_COMMIT)"
+	wget -t 5 -T 15 -O "$(BUILD_DIR)/bb.tar.bz2" "$(BUSYBOX_URL)"
+	echo "$(BUSYBOX_SHA512) $(BUILD_DIR)/bb.tar.bz2" | sha512sum -c -
+	tar -C "$(BUILD_DIR)" -xf "$(BUILD_DIR)/bb.tar.bz2"
+	mv -v $(BUILD_DIR)/busybox-* "$(BUSYBOX_DIR)"
 
 	export PATH="$(MUSL_CROSS_BIN_DIR):$${PATH}"; \
 	cd "$(BUSYBOX_DIR)"; \
