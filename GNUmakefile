@@ -91,7 +91,7 @@ $(BUILD_DIR)/.initramfs-tree-done: $(BUILD_DIR)/.busybox-build-done
 	cp -a "$(ROOT_DIR)/inittab" "$(INITRAMFS_DIR)/etc/"
 	cp -a "$(ROOT_DIR)/profile" "$(INITRAMFS_DIR)/etc/"
 
-	cowsay -f "tux" "LORnix-$(release_ver)" \
+	cowsay -f "$(ROOT_DIR)/lortux.cow" "LORnix-$(release_ver)" \
 		>"$(INITRAMFS_DIR)/etc/banner"
 
 	touch "$(@)"
