@@ -1,0 +1,8 @@
+::ctrlaltdel:/sbin/reboot
+::shutdown:/sbin/swapoff -a
+::shutdown:/bin/umount -a -r
+::restart:/sbin/init
+tty1::askfirst:/bin/sh -l
+tty2::askfirst:/bin/sh -l
+tty3::askfirst:/bin/sh -l
+tty4::askfirst:/bin/sh -l

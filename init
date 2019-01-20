@@ -1,0 +1,15 @@
+#!/usr/sbin/busybox sh
+
+set -eu
+
+/usr/sbin/busybox mount -t proc none /proc
+/usr/sbin/busybox mount -t sysfs none /sys
+
+/usr/sbin/busybox --install -s
+
+export PATH="/usr/bin:/usr/sbin"
+
+mdev -s
+echo "/sbin/mdev" >/proc/sys/kernel/hotplug
+
+exec /usr/sbin/busybox init

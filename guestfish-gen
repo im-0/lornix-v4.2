@@ -1,0 +1,28 @@
+#!/bin/sh -eu
+
+ROOT_DIR="${1}"
+KERNEL_DIR="${2}"
+IMG_FILE="${3}"
+
+guestfish <<GUESTFISH_END
+sparse ${IMG_FILE} 16M
+run
+part-init /dev/sda mbr
+part-add /dev/sda primary 2048 -1
+part-set-bootable /dev/sda 1 true
+mkfs ext2 /dev/sda1
+
+mount /dev/sda1 /
+
+mkdir /boot
+upload ${ROOT_DIR}/extlinux.conf /boot/extlinux.conf
+upload ${KERNEL_DIR}/arch/x86/boot/bzImage /boot/bzImage
+
+extlinux /boot
+upload /usr/share/syslinux/libutil.c32 /boot/libutil.c32
+upload /usr/share/syslinux/menu.c32 /boot/menu.c32
+
+upload /usr/share/syslinux/mbr.bin /boot/mbr.bin
+copy-file-to-device /boot/mbr.bin /dev/sda size:440
+rm /boot/mbr.bin
+GUESTFISH_END

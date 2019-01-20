@@ -1,0 +1,23 @@
+dir /proc 0700 0 0
+dir /sys 0700 0 0
+dir /dev 0755 0 0
+
+dir /lib 0755 0 0
+dir /usr 0755 0 0
+dir /usr/sbin 0755 0 0
+dir /usr/bin 0755 0 0
+dir /mnt 0755 0 0
+dir /root 0755 0 0
+dir /etc 0755 0 0
+slink /bin usr/bin 0777 0 0
+slink /sbin usr/sbin 0777 0 0
+
+nod /dev/console 644 0 0 c 5 1
+
+file /init initramfs/init 0755 0 0
+file /lib/libc.so initramfs/lib/libc.so 0755 0 0
+slink /lib/ld-musl-i386.so.1 libc.so 0777 0 0
+file /usr/sbin/busybox initramfs/usr/sbin/busybox 0755 0 0
+file /etc/inittab initramfs/etc/inittab 0644 0 0
+file /etc/profile initramfs/etc/profile 0644 0 0
+file /etc/banner initramfs/etc/banner 0644 0 0
