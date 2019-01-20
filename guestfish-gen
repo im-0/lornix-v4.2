@@ -20,6 +20,7 @@ fi
 guestfish <<GUESTFISH_END
 sparse ${IMG_FILE} 16M
 run
+
 part-init /dev/sda mbr
 part-add /dev/sda primary 2048 -1
 part-set-bootable /dev/sda 1 true
@@ -38,4 +39,8 @@ upload ${LIB_DIR}/menu.c32 /boot/menu.c32
 upload ${MBR_DIR}/mbr.bin /boot/mbr.bin
 copy-file-to-device /boot/mbr.bin /dev/sda size:440
 rm /boot/mbr.bin
+
+ll /boot/
+
+umount-all
 GUESTFISH_END
