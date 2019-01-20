@@ -72,8 +72,8 @@ $(BUILD_DIR)/.busybox-build-done: $(BUILD_DIR)/.musl-cross-build-done
 
 	export PATH="$(MUSL_CROSS_BIN_DIR):$${PATH}"; \
 	cd "$(BUSYBOX_DIR)"; \
-	yes "" | $(MAKE) CROSS_COMPILE=i486-linux-musl- CFLAGS="-march=i486 -mtune=i486" oldconfig; \
-	$(MAKE) CROSS_COMPILE=i486-linux-musl- CFLAGS="-march=i486 -mtune=i486"
+	yes "" | $(MAKE) CROSS_COMPILE=i486-linux-musl- oldconfig; \
+	$(MAKE) CROSS_COMPILE=i486-linux-musl-
 
 	touch "$(@)"
 
